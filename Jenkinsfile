@@ -8,17 +8,15 @@ pipeline {
                 bat 'mvnw.cmd clean package'
             }
         }
-
         stage('Deploy to EC2') {
-            steps {
-                sshagent(['ec2-ssh-key']) {
-                    bat '''
-                    ssh -o StrictHostKeyChecking=no ec2-user@44.195.85.219 "pkill -f java || true"
-                    scp -o StrictHostKeyChecking=no target\\*.jar ec2-user@44.195.85.219:/home/ec2-user/app.jar
-                    ssh -o StrictHostKeyChecking=no ec2-user@44.195.85.219 "nohup java -jar /home/ec2-user/app.jar > output.log 2>&1 &"
-                    '''
-                }
-            }
-        }
+    steps {
+        bat """
+        scp -i C:\\Users\\bhush\\Desktop\\employeeMS.pem target\\employeemanagmentbackend-0.0.1-SNAPSHOT.jar ec2-user@44.195.85.219:/home/ec2-user/
+        
+        ssh -i C:\\Users\\bhush\\Desktop\\employeeMS.pem ec2-user@44.195.85.219 ^
+        "pkill -f employeemanagmentbackend || true && nohup java -jar /home/ec2-user/employeemanagmentbackend-0.0.1-SNAPSHOT.jar > app.log 2>&1 &"
+        """
+    }
+}
     }
 }
